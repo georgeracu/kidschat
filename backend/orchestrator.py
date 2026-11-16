@@ -428,7 +428,7 @@ class Orchestrator:
         if not self.local_llm.supports_vision():
             response_text = (
                 "This local model cannot look at pictures yet. "
-                "Please ask a grown-up to switch KidsChat to a Gemma 4 model."
+                "Please ask a grown-up to switch KidsChat to a Gemma 4 or Ornith model."
             )
             history.append({"role": "assistant", "content": response_text})
             yield {"type": "text", "content": response_text}
