@@ -85,6 +85,8 @@ class LocalLLM:
             options = self._chat_options()
             if options:
                 kwargs["options"] = options
+            if self._model_family() == "ornith":
+                kwargs["think"] = False
 
             response = await self.client.chat(**kwargs)
 
@@ -119,7 +121,7 @@ class LocalLLM:
             }
 
     def supports_vision(self) -> bool:
-        return self._model_family() in {"gemma4"}
+        return self._model_family() in {"gemma4", "ornith"}
 
     def _model_family(self) -> str:
         model_name = self.model.lower()
@@ -127,6 +129,8 @@ class LocalLLM:
             return "gpt-oss"
         if "gemma4" in model_name or "gemma-4" in model_name:
             return "gemma4"
+        if "ornith" in model_name:
+            return "ornith"
         return "generic"
 
     def _build_system_prompt(self, system: str, reasoning_effort: str) -> str:

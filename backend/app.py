@@ -16,9 +16,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 
-from backend.orchestrator import Orchestrator
-
 load_dotenv()
+
+from backend.orchestrator import Orchestrator
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message)s")
 log = logging.getLogger("kidschat")

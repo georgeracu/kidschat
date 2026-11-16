@@ -146,3 +146,30 @@ def test_vision_images_are_attached_to_last_user_message():
     assert result["content"] == "I see a bright orange shirt."
     assert client.chat_calls[0]["messages"][-1]["images"] == [b"fake-jpeg-bytes"]
     assert llm.supports_vision() is True
+
+
+def test_ornith_disables_thinking_and_supports_vision():
+    client = FakeClient(response=_fake_response("I see a red ball."))
+    llm = LocalLLM(model="ornith-1.5:35b", client=client)
+
+    result = asyncio.run(
+        llm.chat(
+            system="You are helpful.",
+            messages=[{"role": "user", "content": "What is this?"}],
+            images=[b"fake-jpeg-bytes"],
+        )
+    )
+
+    assert result["content"] == "I see a red ball."
+    assert client.chat_calls[0]["think"] is False
+    assert client.chat_calls[0]["messages"][-1]["images"] == [b"fake-jpeg-bytes"]
+    assert llm.supports_vision() is True
+
+
+def test_generic_model_does_not_set_think():
+    client = FakeClient(response=_fake_response("Hello there."))
+    llm = LocalLLM(model="qwen3:30b", client=client)
+
+    asyncio.run(llm.chat(system="You are helpful.", messages=[{"role": "user", "content": "Hi"}]))
+
+    assert "think" not in client.chat_calls[0]
